@@ -62,4 +62,5 @@ React 19 + TypeScript + Vite SPA with feature-based folder structure:
 - Endpoints: `/employees`, `/departments`
 - Use this base URL in all RTK Query API slices during development
 
-
+# Always use context7 to check up-to-date docs when implementing or modifying
+code that uses RTK Query, React Hook Form, Zod, TanStack Table, or any third-party library.

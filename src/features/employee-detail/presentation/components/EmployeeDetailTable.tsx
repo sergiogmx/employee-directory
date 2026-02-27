@@ -4,20 +4,26 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { Employee } from "../../domain/employee.types";
+import type { EmployeeDetail } from "../../domain/employee-detail.types";
 
-const columnHelper = createColumnHelper<Employee>();
+const columnHelper = createColumnHelper<EmployeeDetail>();
 
 const columns = [
   columnHelper.accessor((row) => `${row.firstName} ${row.lastName}`, {
     id: "name",
     header: "Name",
   }),
+  columnHelper.accessor("email", {
+    header: "Email",
+  }),
   columnHelper.accessor("position", {
     header: "Position",
   }),
   columnHelper.accessor("department", {
     header: "Department",
+  }),
+  columnHelper.accessor("startDate", {
+    header: "Start Date",
   }),
   columnHelper.accessor("status", {
     header: "Status",
@@ -43,12 +49,15 @@ const columns = [
   }),
 ];
 
-interface EmployeesTableProps {
-  employees: Employee[];
-  onRowClick?: (employee: Employee) => void;
+interface EmployeeDetailTableProps {
+  employees: EmployeeDetail[];
+  onRowClick?: (employee: EmployeeDetail) => void;
 }
 
-export default function EmployeesTable({ employees, onRowClick }: EmployeesTableProps) {
+export default function EmployeeDetailTable({
+  employees,
+  onRowClick,
+}: EmployeeDetailTableProps) {
   const table = useReactTable({
     data: employees,
     columns,

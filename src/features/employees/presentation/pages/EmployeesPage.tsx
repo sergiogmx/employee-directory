@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { useGetEmployeesQuery } from "../../data/employeesApi";
 import EmployeesTable from "../components/EmployeesTable";
 
 export default function EmployeesPage() {
+  const navigate = useNavigate();
   const { data: employees, isLoading, isError } = useGetEmployeesQuery();
 
   if (isLoading) {
@@ -19,7 +21,10 @@ export default function EmployeesPage() {
   return (
     <div className="p-8">
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Employees</h1>
-      <EmployeesTable employees={employees ?? []} />
+      <EmployeesTable
+        employees={employees ?? []}
+        onRowClick={(employee) => navigate(`/employees/${employee.id}`)}
+      />
     </div>
   );
 }

@@ -99,6 +99,16 @@
       "department": "Analytics",
       "startDate": "2022-07-18",
       "status": "active"
+    },
+    {
+      "id": "0cad",
+      "firstName": "Sergio ",
+      "lastName": "Gonzalez",
+      "email": "sergio.gonzalez@apsys.mx",
+      "position": "UX/UI Designer",
+      "department": "Design",
+      "startDate": "2026-02-27",
+      "status": "active"
     }
   ],
   "departments": [

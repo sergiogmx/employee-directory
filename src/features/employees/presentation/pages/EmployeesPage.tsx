@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetEmployeesQuery } from "../../data/employeesApi";
+import { useGetEmployeesQuery, useGetDepartmentsQuery } from "../../data/employeesApi";
 import EmployeesTable from "../components/EmployeesTable";
 import EmployeeCreateForm from "../components/EmployeeCreateForm";
+import DepartmentFilter from "../components/DepartmentFilter";
 
 export default function EmployeesPage() {
   const navigate = useNavigate();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
   const { data: employees, isLoading, isError, refetch } = useGetEmployeesQuery();
+  const { data: departments } = useGetDepartmentsQuery();
+
+  const filteredEmployees = useMemo(() => {
+    if (!employees) return [];
+    if (!selectedDepartment) return employees;
+    return employees.filter((e) => e.department === selectedDepartment);
+  }, [employees, selectedDepartment]);
 
   if (isLoading) {
     return (
@@ -57,7 +66,16 @@ export default function EmployeesPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Employees</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold text-gray-900">Employees</h2>
+          {departments && (
+            <DepartmentFilter
+              departments={departments}
+              value={selectedDepartment}
+              onChange={setSelectedDepartment}
+            />
+          )}
+        </div>
         <button
           onClick={() => setShowCreateForm((prev) => !prev)}
           className={`min-h-[44px] rounded-md px-4 py-2.5 text-sm font-medium shadow-sm focus:ring-2 focus:ring-offset-2 focus:outline-none ${
@@ -80,13 +98,15 @@ export default function EmployeesPage() {
       )}
 
       <EmployeesTable
-        employees={employees ?? []}
+        employees={filteredEmployees}
         onRowClick={(employee) => navigate(`/employees/${employee.id}`)}
       />
 
       {employees && employees.length > 0 && (
         <p className="mt-3 text-sm text-gray-500">
-          Showing {employees.length} employee{employees.length !== 1 ? "s" : ""}
+          {selectedDepartment
+            ? `Showing ${filteredEmployees.length} of ${employees.length} employees`
+            : `Showing ${employees.length} employee${employees.length !== 1 ? "s" : ""}`}
         </p>
       )}
     </div>

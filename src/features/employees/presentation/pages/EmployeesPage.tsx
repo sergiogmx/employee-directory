@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetEmployeesQuery } from "../../data/employeesApi";
 import EmployeesTable from "../components/EmployeesTable";
@@ -7,7 +7,18 @@ import EmployeeCreateForm from "../components/EmployeeCreateForm";
 export default function EmployeesPage() {
   const navigate = useNavigate();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { data: employees, isLoading, isError, refetch } = useGetEmployeesQuery();
+
+  const filteredEmployees = useMemo(() => {
+    if (!employees || !searchTerm.trim()) return employees ?? [];
+    const term = searchTerm.toLowerCase();
+    return employees.filter(
+      (emp) =>
+        emp.firstName.toLowerCase().includes(term) ||
+        emp.lastName.toLowerCase().includes(term),
+    );
+  }, [employees, searchTerm]);
 
   if (isLoading) {
     return (
@@ -70,6 +81,16 @@ export default function EmployeesPage() {
         </button>
       </div>
 
+      <div className="mb-4">
+        <input
+          type="search"
+          placeholder="Search by name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+      </div>
+
       {showCreateForm && (
         <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6">
           <h3 className="mb-4 text-lg font-semibold text-gray-900">
@@ -80,13 +101,15 @@ export default function EmployeesPage() {
       )}
 
       <EmployeesTable
-        employees={employees ?? []}
+        employees={filteredEmployees}
         onRowClick={(employee) => navigate(`/employees/${employee.id}`)}
       />
 
       {employees && employees.length > 0 && (
         <p className="mt-3 text-sm text-gray-500">
-          Showing {employees.length} employee{employees.length !== 1 ? "s" : ""}
+          {searchTerm.trim()
+            ? `Showing ${filteredEmployees.length} of ${employees.length} employee${employees.length !== 1 ? "s" : ""}`
+            : `Showing ${employees.length} employee${employees.length !== 1 ? "s" : ""}`}
         </p>
       )}
     </div>

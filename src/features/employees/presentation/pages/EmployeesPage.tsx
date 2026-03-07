@@ -82,12 +82,17 @@ export default function EmployeesPage() {
       </div>
 
       <div className="mb-4">
+        <label htmlFor="employee-search" className="sr-only">
+          Search employees by name
+        </label>
         <input
+          id="employee-search"
           type="search"
+          aria-label="Search employees by name"
           placeholder="Search by name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="min-h-[44px] w-full rounded-md border border-gray-300 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
@@ -106,7 +111,7 @@ export default function EmployeesPage() {
       />
 
       {employees && employees.length > 0 && (
-        <p className="mt-3 text-sm text-gray-500">
+        <p className="mt-3 text-sm text-gray-500" aria-live="polite" aria-atomic="true">
           {searchTerm.trim()
             ? `Showing ${filteredEmployees.length} of ${employees.length} employee${employees.length !== 1 ? "s" : ""}`
             : `Showing ${employees.length} employee${employees.length !== 1 ? "s" : ""}`}
